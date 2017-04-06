@@ -26,6 +26,7 @@ gamedata$appid <- NULL
 gamedata$name <- NULL
 gamedata[,4:9] <- NULL
 gamedata[,5:8] <- NULL
+gamedata$tags <- NULL
 
 #Replace all commas in the developer and publisher columns to allow proper writing to csv.
 gamedata$developer <- gsub(","," &",gamedata$developer)
@@ -44,8 +45,17 @@ for(i in 6:ncol(gamedata)) {
     gamedata[,i] <- NA
   }
 }
-
 gamedata <- gamedata[, colSums(is.na(gamedata)) != nrow(gamedata)]
+
+for(i in 1:nrow(gamedata)) {
+  if(rowSums(gamedata[i,6:ncol(gamedata)]) < 1) {
+    gamedata[i,] <- NA
+  }
+}
+
+NAS <- gamedata[is.na(gamedata$`Free to Play`),]
+gamedata <- gamedata[]
+
 
 #Create two other versions of the data, removing any entries below 100 average minutes and 1000 average minutes, respectively.
 gamedata100 <- gamedata[gamedata$average_forever >= 100,]
