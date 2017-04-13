@@ -2,7 +2,7 @@
 #Data quality report script for CS376B
 
 #LOADING
-
+install.packages("corrplot")
 #Load the necessary libraries.
 library(corrplot)
 library(aplpack)
@@ -69,8 +69,11 @@ for (i in 3:16)
   print(IQR(moddata[[i]]))
 }
 
-corModdata <- cor(moddata[,3:15])
+#Output a correlation plot of comparable features
+corModdata <- cor(steamspy[,6:16])
+png("corrplot.png", width = 1000, height = 1000)
 corrplot(corModdata, main = "Correlation Plot")
+dev.off()
 
 #Tests correlation between the numerical columns and average playtime. Still have to make price and score comparable.-------------------TODO
 writeLines("Correlation data, comparing to average playtime.")
