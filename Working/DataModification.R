@@ -16,6 +16,7 @@ library(RWeka)
 load('steamspy.Rda')
 gamedata <- steamspy
 
+
 #MODIFICATIONS
 #Convert tag columns to either 1 or 0, based on whether or not the game can be categorized by that tag.
 #Allows for an easier time categorizing by tags, and improves the overall readability of the data.
@@ -63,14 +64,13 @@ gamedata <- gamedata[!is.na(gamedata$`Free to Play`),]
 #gamedata100 <- gamedata[gamedata$average_forever >= 100,]
 #gamedata1000 <- gamedata[gamedata$average_forever >= 1000,]
 
+#Removing developer and publisher for now
 gamedata$developer <- NULL
 gamedata$publisher <- NULL
-gamedata$score_rank[is.na(gamedata$score_rank)] <- 0
 
 #Create a version of the data with a binned target feature
 gamedata.binned <- gamedata
 gamedata.binned$average_forever <- discretize(gamedata$average_forever, "frequency", categories = 10)
-
 
 
 #WRITING
