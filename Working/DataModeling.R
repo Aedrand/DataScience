@@ -14,6 +14,7 @@ install.packages("arules")
 install.packages("e1071")
 install.packages("OneR")
 install.packages("mlbench")
+install.packages("neuralnet")
 
 #Load libraries
 library(car)
@@ -27,8 +28,8 @@ library(arules)
 library(e1071)
 library(OneR)
 library(mlbench)
+library(neuralnet)
 
-#LOADING
 #Load the datasets
 load('modgamedata.Rda')
 load('modgamedataBinned.Rda')
@@ -80,3 +81,50 @@ print(RIPPER.eval)
 #Naive Bayes
 Bayes.predict <- predict(Bayes.gamedata, gamedata.binned.test)
 eval_model(Bayes.predict, gamedata.binned.test)
+
+
+#######TESTING ZONE###############
+load('modgamedata.Rda')
+
+#TRAIN AND TEST SEPERATION
+#Seperate the data into training and test sets
+set.seed(1)
+trainSet <- createDataPartition(gamedata$likely_to_succeed, p=.6)[[1]]
+gamedata.train <- gamedata[trainSet,]
+gamedata.test <- gamedata[-trainSet,]
+rm(trainSet)
+
+#C4.5
+C45.gamedata <- J48(likely_to_succeed ~ ., data=gamedata.train)
+
+summary(C45.gamedata)
+
+#png("gameC4.5Tree.png", width = 1000, height = 1000)
+plot(C45.gamedata)
+#dev.off()
+
+#RIPPER
+RIPPER.gamedata <- JRip(likely_to_succeed ~ ., data=gamedata.train)
+
+print(RIPPER.gamedata)
+
+#Naive Bayes
+Bayes.gamedata <- naiveBayes(likely_to_succeed ~ .,data = gamedata.train)
+summary(Bayes.gamedata)
+
+#EVALUATION
+#C4.5 
+C45.predict <- predict(C45.gamedata, gamedata.test)
+C45.eval <- confusionMatrix(C45.predict, gamedata.test$likely_to_succeed)
+print(C45.eval)
+
+#RIPPER
+RIPPER.predict <- predict(RIPPER.gamedata, gamedata.test)
+RIPPER.eval <- confusionMatrix(RIPPER.predict, gamedata.test$likely_to_succeed)
+print(RIPPER.eval)
+
+#Naive Bayes
+Bayes.predict <- predict(Bayes.gamedata, gamedata.binned.test)
+eval_model(Bayes.predict, gamedata.binned.test)
+
+

@@ -184,7 +184,7 @@
 				"loader" : {
 					"type" : "loader",
 					"class" : "weka.core.converters.ArffLoader",
-					"filePath" : "C:/Users/Andrew Riggs/GIT REPOS/DataScience/Working/modGameDataBinned.arff",
+					"filePath" : "C:/Users/Andrew Riggs/GIT REPOS/DataScience/Working/modGameData.arff",
 					"useRelativePath" : false
 				},
 				"name" : "ArffLoader2"
@@ -199,7 +199,7 @@
 		{
 			"class" : "weka.knowledgeflow.steps.ClassAssigner",
 			"properties" : {
-				"classColumn" : "average_forever",
+				"classColumn" : "likely_to_succeed",
 				"name" : "ClassAssigner"
 			},
 			"connections" : {
@@ -212,7 +212,7 @@
 		{
 			"class" : "weka.knowledgeflow.steps.ClassAssigner",
 			"properties" : {
-				"classColumn" : "average_forever",
+				"classColumn" : "likely_to_succeed",
 				"name" : "ClassAssigner2"
 			},
 			"connections" : {
