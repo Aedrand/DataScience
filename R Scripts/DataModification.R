@@ -1,7 +1,7 @@
 #Andrew Riggs
 #Data modification procedures for CS376B
 
-#SETUP
+#####SETUP#####
 #Install the needed packages
 install.packages("arules")
 install.packages("RWeka")
@@ -11,14 +11,14 @@ library(corrplot)
 library(arules)
 library(RWeka)
 
-#LOADING
+#####LOADING#####
 #Setup the data, loading from an Rda file.
 #Storing in seperate frame because I'm not entirely sure how R works and don't want to overwrite the original data.
 load('steamspy.Rda')
 gamedata <- steamspy
 
 
-#MODIFICATIONS
+#####MODIFICATIONS#####
 #Convert tag columns to either 1 or 0, based on whether or not the game can be categorized by that tag.
 #Allows for an easier time categorizing by tags, and improves the overall readability of the data.
 tagrows <- gamedata[,18:ncol(gamedata)]
@@ -46,22 +46,22 @@ gamedata$price <- as.numeric(gamedata$price)
 gamedata$score_rank <- as.numeric(gamedata$score_rank)
 
 #Remove tag features based on correlation (FIRST PASS)
-for(i in 6:ncol(gamedata)) {
-  c <- cor(gamedata[[i]], gamedata$average_forever)
-  if(c > -0.006158 && c < 0.020392) {
-    gamedata[,i] <- NA
-  }
-}
-gamedata <- gamedata[, colSums(is.na(gamedata)) != nrow(gamedata)]
+#for(i in 6:ncol(gamedata)) {
+ # c <- cor(gamedata[[i]], gamedata$average_forever)
+  #if(c > -0.006158 && c < 0.020392) {
+   # gamedata[,i] <- NA
+  #}
+#}
+#gamedata <- gamedata[, colSums(is.na(gamedata)) != nrow(gamedata)]
 
 #Remove tag features based on correlation (SECOND PASS)
-for(i in 6:ncol(gamedata)) {
-  c <- cor(gamedata[[i]], gamedata$average_forever)
-  if(c > -0.012047 && c < 0.042394) {
-    gamedata[,i] <- NA
-  }
-}
-gamedata <- gamedata[, colSums(is.na(gamedata)) != nrow(gamedata)]
+#for(i in 6:ncol(gamedata)) {
+ # c <- cor(gamedata[[i]], gamedata$average_forever)
+  #if(c > -0.012047 && c < 0.042394) {
+   # gamedata[,i] <- NA
+  #}
+#}
+#gamedata <- gamedata[, colSums(is.na(gamedata)) != nrow(gamedata)]
 
 #Remove tag features based on correlation (THIRD PASS)
 for(i in 6:ncol(gamedata)) {
@@ -71,7 +71,6 @@ for(i in 6:ncol(gamedata)) {
   }
 }
 gamedata <- gamedata[, colSums(is.na(gamedata)) != nrow(gamedata)]
-
 
 #Remove tag features whose counts are lower than 648 (Second Median)
 for(i in 6:ncol(gamedata)) {
@@ -104,6 +103,12 @@ names(gamedata)[18] <- "Point_And_Click"
 #Remove instances where score is NA
 gamedata <- gamedata[!is.na(gamedata$score_rank),]
 
+corGame <- cor(gamedata)
+png("corrMod.png", width = 800, height = 800)
+corrplot(corGame)
+dev.off()
+
+#####TWO CLASS CREATION#####
 #Create a version of the dataset with a target two class feature
 gamedata.twoclass <- gamedata
 
@@ -119,19 +124,41 @@ gamedata.twoclass$likely_to_succeed <- as.factor(gamedata.twoclass$likely_to_suc
 
 gamedata.twoclass$average_forever <- NULL
 
+#####BINARY TWO CLASS CREATION#####
+gamedata.binary.twoclass <- gamedata
 
-#WRITING
+gamedata.binary.twoclass$likely_to_succeed <- 0
+
+for(i in 1:nrow(gamedata.binary.twoclass)) {
+  if(gamedata.binary.twoclass[i,2] > 437) {
+    gamedata.binary.twoclass[i,20] <- 1
+  }
+}
+
+gamedata.binary.twoclass$average_forever <- NULL
+
+corTwo <- cor(gamedata.binary.twoclass)
+png("corrModTwo.png", width = 800, height = 800)
+corrplot(corTwo)
+dev.off()
+
+#####WRITING#####
 #Write the data to an Rda file, a csv file, and an arff file
 save(gamedata, file= 'modgamedata.Rda')
 save(gamedata.twoclass, file= 'modgamedataTwo.Rda')
+save(gamedata.binary.twoclass, file = 'modgamedataBinary.Rda')
 write.csv(gamedata, file= 'modGameData.csv')
 write.csv(gamedata.twoclass, file= 'modGameDataTwo.csv')
+write.csv(gamedata.binary.twoclass, file= 'modGameDataBinary.csv')
 write.arff(gamedata, file= 'modGameData.arff')
 write.arff(gamedata.twoclass, file= 'modGameDataTwo.arff')
+write.arff(gamedata.binary.twoclass, file= 'modGameDataBinary.arff')
 
 #Remove the data from the work environment
 rm(gamedata)
 rm(gamedata.twoclass)
+rm(gamedata.binary.twoclass)
 rm(steamspy)
 rm(i)
 rm(c)
+rm(corGame)

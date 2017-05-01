@@ -134,31 +134,15 @@
 			},
 			"connections" : {
 				"trainingSet" : [
-					"RandomTree"
-				],
-				"testSet" : [
-					"RandomTree"
-				]
-			},
-			"coordinates" : "480,233"
-		},
-		{
-			"class" : "weka.knowledgeflow.steps.TrainTestSplitMaker",
-			"properties" : {
-				"name" : "TrainTestSplitMaker2",
-				"preserveOrder" : false,
-				"seed" : "1",
-				"trainPercent" : "66"
-			},
-			"connections" : {
-				"trainingSet" : [
+					"RandomTree",
 					"PART"
 				],
 				"testSet" : [
+					"RandomTree",
 					"PART"
 				]
 			},
-			"coordinates" : "475,478"
+			"coordinates" : "474,356"
 		},
 		{
 			"class" : "weka.knowledgeflow.steps.Loader",
@@ -166,7 +150,7 @@
 				"loader" : {
 					"type" : "loader",
 					"class" : "weka.core.converters.ArffLoader",
-					"filePath" : "C:/Users/Andrew Riggs/GIT REPOS/DataScience/Working/modGameData.arff",
+					"filePath" : "C:/GIT_REPOS/DataScience/Working/modGameDataTwo.arff",
 					"useRelativePath" : false
 				},
 				"name" : "ArffLoader"
@@ -176,25 +160,7 @@
 					"ClassAssigner"
 				]
 			},
-			"coordinates" : "241,244"
-		},
-		{
-			"class" : "weka.knowledgeflow.steps.Loader",
-			"properties" : {
-				"loader" : {
-					"type" : "loader",
-					"class" : "weka.core.converters.ArffLoader",
-					"filePath" : "C:/Users/Andrew Riggs/GIT REPOS/DataScience/Working/modGameData.arff",
-					"useRelativePath" : false
-				},
-				"name" : "ArffLoader2"
-			},
-			"connections" : {
-				"dataSet" : [
-					"ClassAssigner2"
-				]
-			},
-			"coordinates" : "263,484"
+			"coordinates" : "47,356"
 		},
 		{
 			"class" : "weka.knowledgeflow.steps.ClassAssigner",
@@ -207,20 +173,7 @@
 					"TrainTestSplitMaker"
 				]
 			},
-			"coordinates" : "358,178"
-		},
-		{
-			"class" : "weka.knowledgeflow.steps.ClassAssigner",
-			"properties" : {
-				"classColumn" : "likely_to_succeed",
-				"name" : "ClassAssigner2"
-			},
-			"connections" : {
-				"dataSet" : [
-					"TrainTestSplitMaker2"
-				]
-			},
-			"coordinates" : "356,572"
+			"coordinates" : "276,356"
 		}
 	]
 }
